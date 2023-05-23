@@ -4,8 +4,8 @@ import { Hightlight } from "@components/Hightlight";
 import { ButtonIcon } from "@components/ButtonIcon";
 import { Input } from "@components/Input";
 import { Filter } from "@components/Filter";
-import { Alert, FlatList } from "react-native";
-import { useEffect, useState } from "react";
+import { Alert, FlatList, TextInput } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { PlayerCard } from "@components/PlayerCard";
 import { ListEmpty } from "@components/ListEmpty";
 import { Button } from "@components/Button";
@@ -32,6 +32,8 @@ export function Players() {
   const route = useRoute();
   const { group } = route.params as RouteParams;
 
+  const newPlayerNameInputRef = useRef<TextInput>(null);
+
   async function handleAddPlayer() {
     if (newPlayerName.trim().length === 0) {
       return Alert.alert(
@@ -47,6 +49,7 @@ export function Players() {
 
     try {
       await playerAdd(newPlayer, group);
+      newPlayerNameInputRef.current?.blur();
       fetchPlayers();
       setNewPlayerName("");
     } catch (error) {
@@ -107,6 +110,7 @@ export function Players() {
       <Hightlight title={group} subtitle="adcione a galera e separe os times" />
       <Form>
         <Input
+          inputRef={newPlayerNameInputRef}
           placeholder="Nome da pessoa"
           autoCorrect={false}
           value={newPlayerName}
